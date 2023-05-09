@@ -64,10 +64,9 @@ public class PitUtilsEventHandler {
     @SubscribeEvent
     public void onPlayerJoinevent(ServerConnectEvent event) {
         PitUtils.loggedIn = true;
-        //TODO: Change message to say lunar one is not a rat
         new ScheduledThreadPoolExecutor(1).schedule(() -> Minecraft.getMinecraft().thePlayer
                 .addChatMessage(new ChatComponentText(EnumChatFormatting.RED +
-                "Downloads not from github.com/usemsedge/mystic-counter are RATs.\n" + EnumChatFormatting.GREEN + "Type /pit help to get a list of commands.")), 3, TimeUnit.SECONDS);
+                "Downloads not from https://github.com/supercoolspy/PitUtilsLunar are RATs.\n" + EnumChatFormatting.GREEN + "Type /pit help to get a list of commands.")), 3, TimeUnit.SECONDS);
     }
 
     @SubscribeEvent
