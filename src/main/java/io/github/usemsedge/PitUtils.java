@@ -1,8 +1,5 @@
 package io.github.usemsedge;
 
-import club.maxstats.weave.loader.api.ModInitializer;
-import club.maxstats.weave.loader.api.command.CommandBus;
-import club.maxstats.weave.loader.api.event.EventBus;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
@@ -14,6 +11,9 @@ import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.ChatComponentText;
+import net.weavemc.loader.api.ModInitializer;
+import net.weavemc.loader.api.command.CommandBus;
+import net.weavemc.loader.api.event.EventBus;
 
 import java.io.*;
 import java.net.URL;
@@ -211,8 +211,9 @@ public class PitUtils implements ModInitializer {
         return name.matches("^[A-Za-z0-9_]*$");
     }
 
+
     @Override
-    public void init() {
+    public void preInit() {
         EventBus.subscribe(new PitUtilsEventHandler());
 
         try {

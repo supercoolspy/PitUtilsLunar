@@ -1,10 +1,10 @@
 package io.github.usemsedge;
 
-import club.maxstats.weave.loader.api.event.MouseEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
+import net.weavemc.loader.api.event.MouseEvent;
 
 public class Cooldown {
     static int steakCooldownInTicks = 200;

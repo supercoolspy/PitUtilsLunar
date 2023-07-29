@@ -1,6 +1,6 @@
 package io.github.usemsedge;
 
-import club.maxstats.weave.loader.api.event.*;
+import net.weavemc.loader.api.event.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ChatComponentText;

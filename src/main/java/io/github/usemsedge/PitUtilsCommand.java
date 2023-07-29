@@ -1,9 +1,9 @@
 package io.github.usemsedge;
 
-import club.maxstats.weave.loader.api.command.Command;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.weavemc.loader.api.command.Command;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
