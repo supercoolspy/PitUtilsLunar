@@ -1,10 +1,5 @@
 {
-  "mixinConfigs": [
-    "examplemod.mixins.json"
-  ],
   "entrypoints": [
     "io.github.usemsedge.PitUtils"
-  ],
-  "hooks": [
   ]
 }

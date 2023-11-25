@@ -14,6 +14,8 @@ import net.minecraft.util.ChatComponentText;
 import net.weavemc.loader.api.ModInitializer;
 import net.weavemc.loader.api.command.CommandBus;
 import net.weavemc.loader.api.event.EventBus;
+import net.weavemc.loader.api.event.StartGameEvent;
+import net.weavemc.loader.api.event.SubscribeEvent;
 
 import java.io.*;
 import java.net.URL;
@@ -211,78 +213,84 @@ public class PitUtils implements ModInitializer {
         return name.matches("^[A-Za-z0-9_]*$");
     }
 
+    public static class Mod {
+        @SubscribeEvent
+        public void postInit(StartGameEvent.Post ignoredEvent) {
+            EventBus.subscribe(new PitUtilsEventHandler());
+
+            try {
+                URL enchants_url = new URL("https://raw.githubusercontent.com/usemsedge/PitUtils/main/enchants_mystics.txt");
+                enchantToHashmap(enchants_url, enchants);
+                PitUtils.saveLogInfo("enchants loaded: here is the list of things\n\n");
+                for (String k : enchants.keySet()) {
+                    PitUtils.saveLogInfo(k + ":" + enchants.get(k) + "\n");
+                }
+            }
+            catch (Exception e) {
+                enchantsLoaded = false;
+                PitUtils.saveLogInfo("enchants failed to load\n");
+            }
+
+            try {
+                URL enchants_url = new URL("https://raw.githubusercontent.com/usemsedge/PitUtils/main/enchants_mystics_short.txt");
+                enchantToHashmap(enchants_url, enchants_short);
+                PitUtils.saveLogInfo("enchants short loaded: here is the list of things\n\n");
+                for (String k : enchants_short.keySet()) {
+                    PitUtils.saveLogInfo(k + ":" + enchants_short.get(k) + "\n");
+                }
+            }
+            catch (Exception e) {
+                enchantsLoaded = false;
+                PitUtils.saveLogInfo("enchants short failed to load\n");
+            }
+
+
+            if (new File(PIT_UTILS_PATH).isFile()) {
+                try {
+                    String[] content = new BufferedReader(new FileReader(PIT_UTILS_PATH)).readLine().split(";");
+                    saveLogInfo("Opened file, her was the content of the file");
+                    for (String s : content) {
+                        saveLogInfo(s + "\n");
+                    }
+
+                    String[] c = content[0].split(",");
+                    PitUtils.permList.addAll(Arrays.asList(c));
+
+                    saveLogInfo("perm list set \n");
+                    MysticDropCounter.setVars(content[1]);
+                    saveLogInfo("mystic drop set \n");
+                    Cooldown.setVars(content[2]);
+                    saveLogInfo("cooldown set \n");
+                    AutoL.setVars(content[3]);
+                    saveLogInfo("autol set \n");
+                    PermTracker.setVars(content[4]);
+                    saveLogInfo("perm tracker set");
+                    DarkChecker.setVars(content[5]);
+                    saveLogInfo("darkchecker set");
+                    CountingPlayers.setVars(content[6]);
+                    saveLogInfo("counting players set");
+                    LowLifeMystics.setVars(content[7]);
+                    saveLogInfo("low life mystics set");
+
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    saveLogInfo("opening data file failed\n");
+                    saveInfo();
+                }
+            }
+            else {
+                saveLogInfo("no data file exists\n");
+                saveInfo();
+            }
+            scheduleFileSave();
+            CommandBus.register(new PitUtilsCommand());
+        }
+    }
 
     @Override
     public void preInit() {
-        EventBus.subscribe(new PitUtilsEventHandler());
-
-        try {
-            URL enchants_url = new URL("https://raw.githubusercontent.com/usemsedge/PitUtils/main/enchants_mystics.txt");
-            enchantToHashmap(enchants_url, enchants);
-            PitUtils.saveLogInfo("enchants loaded: here is the list of things\n\n");
-            for (String k : enchants.keySet()) {
-                PitUtils.saveLogInfo(k + ":" + enchants.get(k) + "\n");
-            }
-        }
-        catch (Exception e) {
-            enchantsLoaded = false;
-            PitUtils.saveLogInfo("enchants failed to load\n");
-        }
-
-        try {
-            URL enchants_url = new URL("https://raw.githubusercontent.com/usemsedge/PitUtils/main/enchants_mystics_short.txt");
-            enchantToHashmap(enchants_url, enchants_short);
-            PitUtils.saveLogInfo("enchants short loaded: here is the list of things\n\n");
-            for (String k : enchants_short.keySet()) {
-                PitUtils.saveLogInfo(k + ":" + enchants_short.get(k) + "\n");
-            }
-        }
-        catch (Exception e) {
-            enchantsLoaded = false;
-            PitUtils.saveLogInfo("enchants short failed to load\n");
-        }
-
-
-        if (new File(PIT_UTILS_PATH).isFile()) {
-            try {
-                String[] content = new BufferedReader(new FileReader(PIT_UTILS_PATH)).readLine().split(";");
-                saveLogInfo("Opened file, her was the content of the file");
-                for (String s : content) {
-                    saveLogInfo(s + "\n");
-                }
-
-                String[] c = content[0].split(",");
-                PitUtils.permList.addAll(Arrays.asList(c));
-
-                saveLogInfo("perm list set \n");
-                MysticDropCounter.setVars(content[1]);
-                saveLogInfo("mystic drop set \n");
-                Cooldown.setVars(content[2]);
-                saveLogInfo("cooldown set \n");
-                AutoL.setVars(content[3]);
-                saveLogInfo("autol set \n");
-                PermTracker.setVars(content[4]);
-                saveLogInfo("perm tracker set");
-                DarkChecker.setVars(content[5]);
-                saveLogInfo("darkchecker set");
-                CountingPlayers.setVars(content[6]);
-                saveLogInfo("counting players set");
-                LowLifeMystics.setVars(content[7]);
-                saveLogInfo("low life mystics set");
-
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                saveLogInfo("opening data file failed\n");
-                saveInfo();
-            }
-        }
-        else {
-            saveLogInfo("no data file exists\n");
-            saveInfo();
-        }
-        scheduleFileSave();
-        CommandBus.register(new PitUtilsCommand());
+        EventBus.subscribe(new Mod());
     }
 
     private static void enchantToHashmap(URL enchants_url, HashMap<String, String> enchants) throws IOException {
